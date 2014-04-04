@@ -32,7 +32,6 @@ module.exports = function (config) {
     options.path = path
 
     var req = http.request(options, function (res) {
-      console.log(options)
       if (res.statusCode == 404) return cb(new Error('[API] Not Found'))
       var data = ''
       res.on('error', cb)
