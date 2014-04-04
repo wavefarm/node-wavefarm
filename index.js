@@ -37,6 +37,11 @@ module.exports = function (config) {
       res.on('error', cb)
       res.on('data', function (d) {data += d})
       res.on('end', function() {
+        try {
+          data = JSON.parse(data)
+        } catch (e) {
+          return cb(new Error('[API] Could not parse data:\n' + data))
+        }
         if (res.statusCode == 500) return cb(new Error('[API] ' + data.message))
         cb(null, data)
       })
