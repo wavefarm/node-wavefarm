@@ -1,6 +1,6 @@
 {
   "name": "wavefarm",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Wave Farm API client library",
   "main": "index.js",
   "repository": "git://github.com/wavefarm/node-wavefarm.git",
