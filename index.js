@@ -1,5 +1,6 @@
 var http = require('http')
 var resolve = require('path').resolve;
+var xtend = require('xtend');
 
 
 var defaults = {
@@ -8,21 +9,10 @@ var defaults = {
   path: '/'
 }
 
-var merge = function (a, b) {
-  if (!a) a = {}
-  if (!b) b = {}
-  for (var k in b) {
-    if (!(k in a)) {
-      a[k] = b[k]
-    }
-  }
-  return a
-}
-
 module.exports = function (config) {
   var wf = {}
 
-  config = merge(config, defaults)
+  config = xtend(defaults, config)
 
   wf.req = function (path, options, cb) {
     if (!cb) {
@@ -30,7 +20,7 @@ module.exports = function (config) {
       options = {}
     }
 
-    options = merge(options, config)
+    options = xtend(config, options)
     options.path = resolve(options.path, path);
 
     var req = http.request(options, function (res) {
