@@ -1,9 +1,11 @@
 var http = require('http')
+var resolve = require('path').resolve;
 
 
 var defaults = {
   host: 'api.wavefarm.org',
-  port: 80
+  port: 80,
+  path: '/'
 }
 
 var merge = function (a, b) {
@@ -29,7 +31,7 @@ module.exports = function (config) {
     }
 
     options = merge(options, config)
-    options.path = path
+    options.path = resolve(options.path, path);
 
     var req = http.request(options, function (res) {
       if (res.statusCode == 404) return cb(new Error('[API] Not Found'))
@@ -53,22 +55,22 @@ module.exports = function (config) {
 
   wf.search = function (query, cb) {
     var searchString = query ? '?q='+encodeURIComponent(query) : ''
-    wf.req('/search'+searchString, cb)
+    wf.req('search'+searchString, cb)
   }
 
   wf.get = function (id, cb) {
-    wf.req('/'+id, cb)
+    wf.req(id, cb)
   }
 
   wf.put = function (id, item, cb) {
-    wf.req('/'+id, {
+    wf.req(id, {
       method: 'put',
       json: item
     }, cb)
   }
 
   wf.schemas = function (cb) {
-    wf.req('/schemas', cb)
+    wf.req('schemas', cb)
   }
 
   return wf
