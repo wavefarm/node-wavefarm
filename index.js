@@ -1,4 +1,5 @@
 var http = require('http')
+var qs = require('querystring')
 var resolve = require('path').resolve;
 var xtend = require('xtend');
 
@@ -44,9 +45,8 @@ module.exports = function (config) {
     else req.end()
   }
 
-  wf.search = function (query, cb) {
-    var searchString = query ? '?q='+encodeURIComponent(query) : ''
-    wf.req('search'+searchString, cb)
+  wf.search = function (params, cb) {
+    wf.req('search?'+qs.stringify(params), cb)
   }
 
   wf.get = function (id, cb) {
