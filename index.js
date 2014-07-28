@@ -22,6 +22,7 @@ module.exports = function (config) {
 
     options = xtend(config, options)
     options.path = resolve(options.path, path);
+    options.withCredentials = false;
 
     var req = http.request(options, function (res) {
       if (res.statusCode == 404) return cb(new Error('[API] Not Found'))
