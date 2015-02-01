@@ -1,11 +1,13 @@
+var http = require('http')
+var https = require('https')
 var qs = require('querystring')
 var resolve = require('path').resolve
 var xtend = require('xtend')
 
 var defaults = {
-  protocol: 'https',
+  protocol: 'https:',
   host: 'wavefarm.org',
-  port: 80,
+  port: 443,
   path: '/api'
 }
 
@@ -13,7 +15,7 @@ module.exports = function (config) {
   var wf = {}
 
   config = xtend(defaults, config)
-  var request = require(config.protocol).request
+  var request = config.protocol === 'https:' ? https.request : http.request
 
   wf.req = function (path, options, cb) {
     if (!cb) {
