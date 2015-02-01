@@ -1,19 +1,19 @@
-var http = require('http')
 var qs = require('querystring')
-var resolve = require('path').resolve;
-var xtend = require('xtend');
-
+var resolve = require('path').resolve
+var xtend = require('xtend')
 
 var defaults = {
-  host: 'api.wavefarm.org',
+  protocol: 'https',
+  host: 'wavefarm.org',
   port: 80,
-  path: '/'
+  path: '/api'
 }
 
 module.exports = function (config) {
   var wf = {}
 
   config = xtend(defaults, config)
+  var request = require(config.protocol).request
 
   wf.req = function (path, options, cb) {
     if (!cb) {
@@ -22,21 +22,21 @@ module.exports = function (config) {
     }
 
     options = xtend(config, options)
-    options.path = resolve(options.path, path);
-    options.withCredentials = false;
+    options.path = resolve(options.path, path)
+    options.withCredentials = false
 
-    var req = http.request(options, function (res) {
-      if (res.statusCode == 404) return cb(new Error('[API] Not Found'))
+    var req = request(options, function (res) {
+      if (res.statusCode === 404) return cb(new Error('[API] Not Found'))
       var data = ''
       res.on('error', cb)
       res.on('data', function (d) {data += d})
-      res.on('end', function() {
+      res.on('end', function () {
         try {
           data = JSON.parse(data)
         } catch (e) {
           return cb(new Error('[API] Could not parse data:\n' + data))
         }
-        if (res.statusCode == 500) return cb(new Error('[API] ' + data.message))
+        if (res.statusCode === 500) return cb(new Error('[API] ' + data.message))
         cb(null, data)
       })
     })
@@ -46,7 +46,7 @@ module.exports = function (config) {
   }
 
   wf.search = function (params, cb) {
-    wf.req('search?'+qs.stringify(params), cb)
+    wf.req('search?' + qs.stringify(params), cb)
   }
 
   wf.get = function (id, cb) {
