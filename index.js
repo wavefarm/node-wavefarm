@@ -2,20 +2,14 @@ var http = require('http')
 var https = require('https')
 var qs = require('querystring')
 var resolve = require('path').resolve
+var url = require('url')
 var xtend = require('xtend')
 
-var defaults = {
-  protocol: 'https:',
-  host: 'wavefarm.org',
-  port: 443,
-  path: '/api'
-}
-
-module.exports = function (config) {
+module.exports = function (apiUrl) {
   var wf = {}
 
-  config = xtend(defaults, config)
-  var request = config.protocol === 'https:' ? https.request : http.request
+  var location = url.parse(apiUrl || 'https://wavefarm.org/api/')
+  var request = location.protocol === 'https:' ? https.request : http.request
 
   wf.req = function (path, options, cb) {
     if (!cb) {
@@ -23,7 +17,7 @@ module.exports = function (config) {
       options = {}
     }
 
-    options = xtend(config, options)
+    options = xtend(location, options)
     options.path = resolve(options.path, path)
     options.withCredentials = false
 
